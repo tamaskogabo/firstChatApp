@@ -7,7 +7,6 @@ import PublicChatRoom from './PublicChatRoom';
 import SendPrivateMessage from './SendPrivateMessage';
 import RegisterPage from './RegisterPage';
 import PrivateChatRoom from './PrivateChatRoom';
-import MembersList from './MembersList';
 
 let stompClient = null;
 
@@ -62,7 +61,6 @@ export default function ChatRoom() {
 
     function onMessageReceived(payload) {
         const incomingMessage = JSON.parse(payload.body);
-        console.log(incomingMessage);
         // eslint-disable-next-line default-case
         switch (incomingMessage.messageStatus) {
             case 'JOIN':
@@ -80,7 +78,6 @@ export default function ChatRoom() {
 
     function onPrivateMessageReceived(payload) {
         const incomingMessage = JSON.parse(payload.body);
-        console.log(incomingMessage);
         if (privateChats.get(incomingMessage.from)) {
             privateChats.get(incomingMessage.from).push(incomingMessage);
             setPrivateChats(new Map(privateChats));
@@ -138,11 +135,31 @@ export default function ChatRoom() {
         <div className='container'>
             {userData.connected ? (
                 <div className='chat-box'>
-                    <MembersList
-                        onSetTab={setTab}
-                        tab={tab}
-                        privateChats={privateChats}
-                    />
+                    <div className='member-list'>
+                        <ul>
+                            <li
+                                onClick={() => setTab('CHATROOM')}
+                                className={`member ${
+                                    tab === 'CHATROOM' && 'active'
+                                }`}
+                            >
+                                Chatroom
+                            </li>
+                            {[...privateChats.keys()].map((name, index) => {
+                                return (
+                                    <li
+                                        key={index}
+                                        onClick={() => setTab(name)}
+                                        className={`member ${
+                                            tab === name && 'active'
+                                        }`}
+                                    >
+                                        {name}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
                     {tab === 'CHATROOM' && (
                         <div className='chat-content'>
                             <PublicChatRoom
