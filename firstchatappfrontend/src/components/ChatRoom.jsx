@@ -7,20 +7,20 @@ let stompClient = null;
 
 export default function ChatRoom() {
     const [userData, setUserData] = useState({
-        username: '',
-        receiverName: '',
+        from: '',
+        to: '',
         connected: false,
-        message: '',
+        text: '',
     });
     const [publicChats, setPublicChats] = useState([]);
     const [privateChats, setPrivateChats] = useState(new Map());
     const [tab, setTab] = useState('CHATROOM');
 
     function handleUserName(e) {
-        setUserData({ ...userData, username: e.target.value });
+        setUserData({ ...userData, from: e.target.value });
     }
 
-    function registerUser() {
+    function connect() {
         const sock = new SockJS('http://localhost:8080/ws');
         stompClient = over(sock);
         stompClient.connect({}, onConnected, onConnectionError);
@@ -28,9 +28,9 @@ export default function ChatRoom() {
 
     function onConnected() {
         setUserData({ ...userData, connected: true });
-        stompClient.subscribe('/chatroom/public', onPublicMessageReceived);
+        stompClient.subscribe('/chatroom/public', onMessageReceived);
         stompClient.subscribe(
-            `/user/${userData.username}/private`,
+            `/user/${userData.from}/private`,
             onPrivateMessageReceived,
         );
         userJoin();
@@ -39,8 +39,8 @@ export default function ChatRoom() {
     function userJoin() {
         if (stompClient) {
             const outgoingMessage = {
-                from: userData.username,
-                status: 'JOIN',
+                from: userData.from,
+                messageStatus: 'JOIN',
             };
             stompClient.send(
                 '/app/message',
@@ -51,12 +51,13 @@ export default function ChatRoom() {
     }
 
     function onConnectionError(err) {
-        setUserData({ ...userData, connected: false });
         console.error(err);
     }
 
-    function onPublicMessageReceived(payload) {
+    function onMessageReceived(payload) {
         const incomingMessage = JSON.parse(payload.body);
+        console.log(incomingMessage);
+        // eslint-disable-next-line default-case
         switch (incomingMessage.messageStatus) {
             case 'JOIN':
                 if (!privateChats.get(incomingMessage.from)) {
@@ -65,66 +66,65 @@ export default function ChatRoom() {
                 }
                 break;
             case 'MESSAGE':
-                const currentState = [...publicChats];
-                currentState.push(incomingMessage);
-                setPublicChats(currentState);
+                publicChats.push(incomingMessage);
+                setPublicChats([...publicChats]);
                 break;
-            default:
-                console.error(
-                    'Something went wrong in receiving a public message.',
-                );
         }
     }
 
     function onPrivateMessageReceived(payload) {
-        const incomingMessage = JSON.parse(payload);
+        const incomingMessage = JSON.parse(payload.body);
+        console.log(incomingMessage);
         if (privateChats.get(incomingMessage.from)) {
             privateChats.get(incomingMessage.from).push(incomingMessage);
             setPrivateChats(new Map(privateChats));
         } else {
-            privateChats.set(incomingMessage.from, [incomingMessage]);
+            const list = [];
+            list.push(incomingMessage);
+            privateChats.set(incomingMessage.from, list);
             setPrivateChats(new Map(privateChats));
         }
     }
 
     function handleMessage(e) {
-        setUserData({ ...userData, message: e.target.value });
+        setUserData({ ...userData, text: e.target.value });
     }
 
     function sendPublicMessage() {
         if (stompClient) {
             const outgoingMessage = {
-                from: userData.username,
-                message: userData.message,
-                status: 'MESSAGE',
+                from: userData.from,
+                text: userData.text,
+                messageStatus: 'MESSAGE',
             };
+            console.log(outgoingMessage);
             stompClient.send(
                 '/app/message',
                 {},
                 JSON.stringify(outgoingMessage),
             );
-            setUserData({ ...userData, message: '' });
+            setUserData({ ...userData, text: '' });
         }
     }
 
     function sendPrivateMessage() {
         if (stompClient) {
             const outgoingMessage = {
-                from: userData.username,
-                message: userData.message,
+                from: userData.from,
+                text: userData.text,
                 to: tab,
-                status: 'MESSAGE',
+                messageStatus: 'MESSAGE',
             };
+            if (userData.from !== tab) {
+                privateChats.get(tab).push(outgoingMessage);
+                setPrivateChats(new Map(privateChats));
+            }
             stompClient.send(
                 '/app/private-message',
                 {},
                 JSON.stringify(outgoingMessage),
             );
-            if (userData.username !== tab) {
-                privateChats.set(tab).push(outgoingMessage);
-                privateChats.set(new Map(privateChats));
-            }
-            setUserData({ ...userData, message: '' });
+            setUserData({ ...userData, text: '' });
         }
     }
 
@@ -163,17 +163,15 @@ export default function ChatRoom() {
                                 {publicChats.map((chat, index) => {
                                     return (
                                         <li key={index} className='message'>
-                                            {chat.from !==
-                                                userData.username && (
+                                            {chat.from !== userData.from && (
                                                 <div className='avatar'>
                                                     {chat.from}
                                                 </div>
                                             )}
                                             <div className='message-data'>
-                                                {chat.message}
+                                                {chat.text}
                                             </div>
-                                            {chat.from ===
-                                                userData.username && (
+                                            {chat.from === userData.from && (
                                                 <div className='avatar-self'>
                                                     {chat.from}
                                                 </div>
@@ -187,7 +185,7 @@ export default function ChatRoom() {
                                     type='text'
                                     className='input-message'
                                     placeholder='Send message'
-                                    value={userData.message}
+                                    value={userData.text}
                                     onChange={handleMessage}
                                 />
                                 <button
@@ -203,34 +201,42 @@ export default function ChatRoom() {
                     {tab !== 'CHATROOM' && (
                         <div className='chat-content'>
                             <ul className='chat-messages'>
-                                {privateChats.get(tab).map((chat, index) => {
-                                    return (
-                                        <li key={index} className='message'>
-                                            {chat.from !==
-                                                userData.username && (
-                                                <div className='avatar'>
-                                                    {chat.from}
+                                {[...privateChats.get(tab)].map(
+                                    (chat, index) => {
+                                        return (
+                                            <li
+                                                key={index}
+                                                className={`message ${
+                                                    chat.from ===
+                                                        userData.from && 'self'
+                                                }`}
+                                            >
+                                                {chat.from !==
+                                                    userData.from && (
+                                                    <div className='avatar'>
+                                                        {chat.from}
+                                                    </div>
+                                                )}
+                                                <div className='message-data'>
+                                                    {chat.text}
                                                 </div>
-                                            )}
-                                            <div className='message-data'>
-                                                {chat.message}
-                                            </div>
-                                            {chat.from ===
-                                                userData.username && (
-                                                <div className='avatar-self'>
-                                                    {chat.from}
-                                                </div>
-                                            )}
-                                        </li>
-                                    );
-                                })}
+                                                {chat.from ===
+                                                    userData.from && (
+                                                    <div className='avatar-self'>
+                                                        {chat.from}
+                                                    </div>
+                                                )}
+                                            </li>
+                                        );
+                                    },
+                                )}
                             </ul>
                             <div className='send-message'>
                                 <input
                                     type='text'
                                     className='input-message'
                                     placeholder='Send message'
-                                    value={userData.message}
+                                    value={userData.text}
                                     onChange={handleMessage}
                                 />
                                 <button
@@ -249,10 +255,11 @@ export default function ChatRoom() {
                     <input
                         id='user-name'
                         placeholder='Enter a user name'
-                        value={userData.username}
+                        name='userName'
+                        value={userData.from}
                         onChange={handleUserName}
                     />
-                    <button type='button' onClick={registerUser}>
+                    <button type='button' onClick={connect}>
                         Register
                     </button>
                 </div>

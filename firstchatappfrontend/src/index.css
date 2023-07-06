@@ -106,9 +106,11 @@ ul {
   border-radius: 5px;
   color:#fff;
 }
-.avatar.self{
+.avatar-self{
   color:#000;
   background-color: greenyellow;
+  padding: 3px 5px;
+  border-radius: 5px;
 }
 .message{
   padding:5px;
