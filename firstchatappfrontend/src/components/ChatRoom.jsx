@@ -33,6 +33,21 @@ export default function ChatRoom() {
             `/user/${userData.username}/private`,
             onPrivateMessageReceived,
         );
+        userJoin();
+    }
+
+    function userJoin() {
+        if (stompClient) {
+            const outgoingMessage = {
+                from: userData.username,
+                status: 'JOIN',
+            };
+            stompClient.send(
+                '/app/message',
+                {},
+                JSON.stringify(outgoingMessage),
+            );
+        }
     }
 
     function onConnectionError(err) {
@@ -72,12 +87,45 @@ export default function ChatRoom() {
         }
     }
 
-    function handleMessage() {
-        //TODO
+    function handleMessage(e) {
+        setUserData({ ...userData, message: e.target.value });
     }
 
     function sendPublicMessage() {
-        //TODO
+        if (stompClient) {
+            const outgoingMessage = {
+                from: userData.username,
+                message: userData.message,
+                status: 'MESSAGE',
+            };
+            stompClient.send(
+                '/app/message',
+                {},
+                JSON.stringify(outgoingMessage),
+            );
+            setUserData({ ...userData, message: '' });
+        }
+    }
+
+    function sendPrivateMessage() {
+        if (stompClient) {
+            const outgoingMessage = {
+                from: userData.username,
+                message: userData.message,
+                to: tab,
+                status: 'MESSAGE',
+            };
+            stompClient.send(
+                '/app/private-message',
+                {},
+                JSON.stringify(outgoingMessage),
+            );
+            if (userData.username !== tab) {
+                privateChats.set(tab).push(outgoingMessage);
+                privateChats.set(new Map(privateChats));
+            }
+            setUserData({ ...userData, message: '' });
+        }
     }
 
     return (
@@ -154,25 +202,45 @@ export default function ChatRoom() {
                     )}
                     {tab !== 'CHATROOM' && (
                         <div className='chat-content'>
-                            {privateChats.get(tab).map((chat, index) => {
-                                return (
-                                    <li key={index} className='message'>
-                                        {chat.from !== userData.username && (
-                                            <div className='avatar'>
-                                                {chat.from}
+                            <ul className='chat-messages'>
+                                {privateChats.get(tab).map((chat, index) => {
+                                    return (
+                                        <li key={index} className='message'>
+                                            {chat.from !==
+                                                userData.username && (
+                                                <div className='avatar'>
+                                                    {chat.from}
+                                                </div>
+                                            )}
+                                            <div className='message-data'>
+                                                {chat.message}
                                             </div>
-                                        )}
-                                        <div className='message-data'>
-                                            {chat.message}
-                                        </div>
-                                        {chat.from === userData.username && (
-                                            <div className='avatar-self'>
-                                                {chat.from}
-                                            </div>
-                                        )}
-                                    </li>
-                                );
-                            })}
+                                            {chat.from ===
+                                                userData.username && (
+                                                <div className='avatar-self'>
+                                                    {chat.from}
+                                                </div>
+                                            )}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                            <div className='send-message'>
+                                <input
+                                    type='text'
+                                    className='input-message'
+                                    placeholder='Send message'
+                                    value={userData.message}
+                                    onChange={handleMessage}
+                                />
+                                <button
+                                    type='button'
+                                    className='send-button'
+                                    onClick={sendPrivateMessage}
+                                >
+                                    Send
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
