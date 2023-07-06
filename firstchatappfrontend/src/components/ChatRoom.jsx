@@ -2,6 +2,12 @@ import React from 'react';
 import { useState } from 'react';
 import { over } from 'stompjs';
 import SockJS from 'sockjs-client';
+import SendPublicMessage from './SendPublicMessage';
+import PublicChatRoom from './PublicChatRoom';
+import SendPrivateMessage from './SendPrivateMessage';
+import RegisterPage from './RegisterPage';
+import PrivateChatRoom from './PrivateChatRoom';
+import MembersList from './MembersList';
 
 let stompClient = null;
 
@@ -132,137 +138,45 @@ export default function ChatRoom() {
         <div className='container'>
             {userData.connected ? (
                 <div className='chat-box'>
-                    <div className='member-list'>
-                        <ul>
-                            <li
-                                onClick={() => setTab('CHATROOM')}
-                                className={`member ${
-                                    tab === 'CHATROOM' && 'active'
-                                }`}
-                            >
-                                Chatroom
-                            </li>
-                            {[...privateChats.keys()].map((name, index) => {
-                                return (
-                                    <li
-                                        key={index}
-                                        onClick={() => setTab(name)}
-                                        className={`member ${
-                                            tab === name && 'active'
-                                        }`}
-                                    >
-                                        {name}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </div>
+                    <MembersList
+                        onSetTab={setTab}
+                        tab={tab}
+                        privateChats={privateChats}
+                    />
                     {tab === 'CHATROOM' && (
                         <div className='chat-content'>
-                            <ul className='chat-messages'>
-                                {publicChats.map((chat, index) => {
-                                    return (
-                                        <li key={index} className='message'>
-                                            {chat.from !== userData.from && (
-                                                <div className='avatar'>
-                                                    {chat.from}
-                                                </div>
-                                            )}
-                                            <div className='message-data'>
-                                                {chat.text}
-                                            </div>
-                                            {chat.from === userData.from && (
-                                                <div className='avatar-self'>
-                                                    {chat.from}
-                                                </div>
-                                            )}
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                            <div className='send-message'>
-                                <input
-                                    type='text'
-                                    className='input-message'
-                                    placeholder='Send message'
-                                    value={userData.text}
-                                    onChange={handleMessage}
-                                />
-                                <button
-                                    type='button'
-                                    className='send-button'
-                                    onClick={sendPublicMessage}
-                                >
-                                    Send
-                                </button>
-                            </div>
+                            <PublicChatRoom
+                                publicChats={publicChats}
+                                userData={userData}
+                            />
+                            <SendPublicMessage
+                                userData={userData}
+                                onHandleMessage={handleMessage}
+                                onSendPublicMessage={sendPublicMessage}
+                            />
                         </div>
                     )}
                     {tab !== 'CHATROOM' && (
                         <div className='chat-content'>
-                            <ul className='chat-messages'>
-                                {[...privateChats.get(tab)].map(
-                                    (chat, index) => {
-                                        return (
-                                            <li
-                                                key={index}
-                                                className={`message ${
-                                                    chat.from ===
-                                                        userData.from && 'self'
-                                                }`}
-                                            >
-                                                {chat.from !==
-                                                    userData.from && (
-                                                    <div className='avatar'>
-                                                        {chat.from}
-                                                    </div>
-                                                )}
-                                                <div className='message-data'>
-                                                    {chat.text}
-                                                </div>
-                                                {chat.from ===
-                                                    userData.from && (
-                                                    <div className='avatar-self'>
-                                                        {chat.from}
-                                                    </div>
-                                                )}
-                                            </li>
-                                        );
-                                    },
-                                )}
-                            </ul>
-                            <div className='send-message'>
-                                <input
-                                    type='text'
-                                    className='input-message'
-                                    placeholder='Send message'
-                                    value={userData.text}
-                                    onChange={handleMessage}
-                                />
-                                <button
-                                    type='button'
-                                    className='send-button'
-                                    onClick={sendPrivateMessage}
-                                >
-                                    Send
-                                </button>
-                            </div>
+                            <PrivateChatRoom
+                                userData={userData}
+                                tab={tab}
+                                privateChats={privateChats}
+                            />
+                            <SendPrivateMessage
+                                userData={userData}
+                                onHandleMessage={handleMessage}
+                                onSendPrivateMessage={sendPrivateMessage}
+                            />
                         </div>
                     )}
                 </div>
             ) : (
-                <div className='register'>
-                    <input
-                        id='user-name'
-                        placeholder='Enter a user name'
-                        name='userName'
-                        value={userData.from}
-                        onChange={handleUserName}
-                    />
-                    <button type='button' onClick={connect}>
-                        Register
-                    </button>
-                </div>
+                <RegisterPage
+                    userData={userData}
+                    onHandleUserName={handleUserName}
+                    onConnect={connect}
+                />
             )}
         </div>
     );
