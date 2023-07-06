@@ -14,6 +14,7 @@ export default function ChatRoom() {
     });
     const [publicChats, setPublicChats] = useState([]);
     const [privateChats, setPrivateChats] = useState(new Map());
+    const [tab, setTab] = useState('CHATROOM');
 
     function handleUserName(e) {
         setUserData({ ...userData, username: e.target.value });
@@ -71,10 +72,110 @@ export default function ChatRoom() {
         }
     }
 
+    function handleMessage() {
+        //TODO
+    }
+
+    function sendPublicMessage() {
+        //TODO
+    }
+
     return (
         <div className='container'>
             {userData.connected ? (
-                <div></div>
+                <div className='chat-box'>
+                    <div className='member-list'>
+                        <ul>
+                            <li
+                                onClick={() => setTab('CHATROOM')}
+                                className={`member ${
+                                    tab === 'CHATROOM' && 'active'
+                                }`}
+                            >
+                                Chatroom
+                            </li>
+                            {[...privateChats.keys()].map((name, index) => {
+                                return (
+                                    <li
+                                        key={index}
+                                        onClick={() => setTab(name)}
+                                        className={`member ${
+                                            tab === name && 'active'
+                                        }`}
+                                    >
+                                        {name}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                    {tab === 'CHATROOM' && (
+                        <div className='chat-content'>
+                            <ul className='chat-messages'>
+                                {publicChats.map((chat, index) => {
+                                    return (
+                                        <li key={index} className='message'>
+                                            {chat.from !==
+                                                userData.username && (
+                                                <div className='avatar'>
+                                                    {chat.from}
+                                                </div>
+                                            )}
+                                            <div className='message-data'>
+                                                {chat.message}
+                                            </div>
+                                            {chat.from ===
+                                                userData.username && (
+                                                <div className='avatar-self'>
+                                                    {chat.from}
+                                                </div>
+                                            )}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                            <div className='send-message'>
+                                <input
+                                    type='text'
+                                    className='input-message'
+                                    placeholder='Send message'
+                                    value={userData.message}
+                                    onChange={handleMessage}
+                                />
+                                <button
+                                    type='button'
+                                    className='send-button'
+                                    onClick={sendPublicMessage}
+                                >
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {tab !== 'CHATROOM' && (
+                        <div className='chat-content'>
+                            {privateChats.get(tab).map((chat, index) => {
+                                return (
+                                    <li key={index} className='message'>
+                                        {chat.from !== userData.username && (
+                                            <div className='avatar'>
+                                                {chat.from}
+                                            </div>
+                                        )}
+                                        <div className='message-data'>
+                                            {chat.message}
+                                        </div>
+                                        {chat.from === userData.username && (
+                                            <div className='avatar-self'>
+                                                {chat.from}
+                                            </div>
+                                        )}
+                                    </li>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
             ) : (
                 <div className='register'>
                     <input
