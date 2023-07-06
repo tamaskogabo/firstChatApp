@@ -4,11 +4,13 @@ public class MessageDTO {
     private String from;
     private String text;
     private String to;
+    private MessageStatus messageStatus;
 
-    public MessageDTO(String from, String text, String to) {
+    public MessageDTO(String from, String text, String to, MessageStatus messageStatus) {
         this.from = from;
         this.text = text;
         this.to = to;
+        this.messageStatus = messageStatus;
     }
 
     public String getFrom() {
@@ -33,5 +35,13 @@ public class MessageDTO {
 
     public void setTo(String to) {
         this.to = to;
+    }
+
+    public MessageStatus getMessageStatus() {
+        return messageStatus;
+    }
+
+    public void setMessageStatus(MessageStatus messageStatus) {
+        this.messageStatus = messageStatus;
     }
 }
