@@ -30,23 +30,26 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/tamaskogabo/firstChatApp">
+    <img src="images/logo.jpg" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
+<h3 align="center">Real-time chatroom</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    One of my first pet projects, a full stack live chat application, using Websocket
+connection, React frontend and Spring Boot backend. The most interesting part of it,
+was learning a lot about the Websocket technology, and how to manage it on both the
+backend and frontend.
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/tamaskogabo/firstChatApp"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/tamaskogabo/firstChatApp">View Demo</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/tamaskogabo/firstChatApp/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/tamaskogabo/firstChatApp/issues">Request Feature</a>
   </p>
 </div>
 
@@ -83,18 +86,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
-
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
+![Product Name Screen Shot][product-screenshot]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -102,16 +94,13 @@ Use the `BLANK_README.md` to get started.
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+-   [![React][React.js]][React-url]
+-   [![Javascript][Javascript]][Javascript-url]
+-   [![Java][Java]][Java-url]
+-   [![Spring][Spring]][Spring-url]
+-   [![Tomcat][Tomcat]][Tomcat-url]
+-   [![CSS][CSS]][CSS-url]
+-   [![Docker][Docker]][Docker-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -120,34 +109,50 @@ This section should list any major frameworks/libraries used to bootstrap your p
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * npm
   ```sh
   npm install npm@latest -g
   ```
+* Install JDK:
+https://www.oracle.com/java/technologies/downloads/
+* Install Maven:
+https://maven.apache.org/install.html
+* Install Docker Desktop:
+https://www.docker.com/products/docker-desktop/
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/tamaskogabo/firstChatApp.git
    ```
-3. Install NPM packages
+2. Install NPM packages in the firstchatappfrontend folder
    ```sh
    npm install
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+3. Create a react build
+   ```sh
+   npm run build
    ```
+4. Copy the newly created build folder's contents from the firstchatappfrontend directory to the /firstChatApp/src/main/resources/static folder. (Static folder might have to be created in resources!)
+
+5. Create a compiled .jar file, using Maven in the firstChatApp folder
+   ```sh
+   mvn package
+   ```
+
+6. Run the batch file in the firstChatApp folder, while docker is up and running.
+   ```sh
+   .\chatapp-build-run.bat
+   ```
+7. Check out the running application on http://localhost:8080
+
+Hint: In order to make it available for other devices on your local network, you might have to turn off your firewall to make the port accessable on the host computer.
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -156,9 +161,7 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+The app can be used for real-time chatting on local network, supporting private chat-rooms and one public chat room, where everybody can post their thoughts. It can be used to study about the most basic use-case of the WS technology in a simple, but instructive environment.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -167,15 +170,12 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [ ] Create backend implementation with Spring-Boot, WebSocketMessageBroker, and Stomp endpoint
+- [ ] Implement and connect the React frontend to the server, using SockJS, and stompClient
+- [ ] Test copy the frontend build to the backend, to make it work with the Tomcat server
+- [ ] Dockerize the application for easier installation and use
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/tamaskogabo/firstChatApp/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -211,9 +211,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Gábor Tamaskó - tamaskogabo@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/tamaskogabo/firstChatApp](https://github.com/tamaskogabo/firstChatApp)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -222,16 +222,9 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+* [] Thanks for Codecool for guiding me on my journey to learn coding
+* [] Thanks for my mentor Réka Beáta Bujdosó, for suggesting the idea of learning a bit about websockets
+* [] Thanks for InvolveInInnovation channel on YT, for the video guidance: https://www.youtube.com/watch?v=o_IjEDAuo8Y&t=34s
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -239,32 +232,30 @@ Use this space to list resources you find helpful and would like to give credit 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/tamaskogabo/firstChatApp.svg?style=for-the-badge
+[contributors-url]: https://github.com/tamaskogabo/firstChatApp/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/tamaskogabo/firstChatApp.svg?style=for-the-badge
+[forks-url]: https://github.com/tamaskogabo/firstChatApp/network/members
+[stars-shield]: https://img.shields.io/github/stars/tamaskogabo/firstChatApp.svg?style=for-the-badge
+[stars-url]: https://github.com/tamaskogabo/firstChatApp/stargazers
+[issues-shield]: https://img.shields.io/github/issues/tamaskogabo/firstChatApp.svg?style=for-the-badge
+[issues-url]: https://github.com/tamaskogabo/firstChatApp/issues
+[license-shield]: https://img.shields.io/github/license/tamaskogabo/firstChatApp.svg?style=for-the-badge
+[license-url]: https://github.com/tamaskogabo/firstChatApp/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
+[linkedin-url]: https://linkedin.com/in/tamaskogabo
+[product-screenshot]: images/chatapp.jpg
+[Javascript]: https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white
+[Javascript-url]: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+[Spring]: https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white
+[Spring-url]: https://spring.io/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
+[Java]: https://img.shields.io/badge/java-F80000?style=for-the-badge&logo=oracle&logoColor=white
+[Java-url]: https://www.oracle.com/java/
+[Tomcat]: https://img.shields.io/badge/apachetomcat-20232A?style=for-the-badge&logo=apachetomcat&logoColor=F8DC75
+[Tomcat-url]: https://tomcat.apache.org/
+[CSS]: https://img.shields.io/badge/css3-gray?style=for-the-badge&logo=css3&logoColor=1572B6
+[CSS-url]: https://developer.mozilla.org/en-US/docs/Web/CSS
+[Docker]: https://img.shields.io/badge/docker-white?style=for-the-badge&logo=docker&logoColor=2496ED
+[Docker-url]: https://www.docker.com/
