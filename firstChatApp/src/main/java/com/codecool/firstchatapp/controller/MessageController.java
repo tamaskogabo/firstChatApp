@@ -11,8 +11,12 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class MessageController {
 
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
     @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    public MessageController(SimpMessagingTemplate simpMessagingTemplate) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
+    }
 
     @MessageMapping("/message") //app/message
     @SendTo("/chatroom/public")
